@@ -25,16 +25,17 @@ extension DecodeError: CustomStringConvertible {
 }
 
 extension DecodeError: Hashable {
-  public var hashValue: Int {
+  public func hash(into hasher: inout Hasher) {
     switch self {
     case let .typeMismatch(expected: expected, actual: actual):
-      return expected.hashValue ^ actual.hashValue
+      hasher.combine(expected)
+      hasher.combine(actual)
     case let .missingKey(string):
-      return string.hashValue
+      hasher.combine(string)
     case let .custom(string):
-      return string.hashValue
+      hasher.combine(string)
     case let .multiple(es):
-      return es.reduce(0) { $0 ^ $1.hashValue }
+      es.forEach { hasher.combine($0) }
     }
   }
 }
